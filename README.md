@@ -58,3 +58,5 @@ app.listen(3000, () => {
 });
 npm init -y
 npm install express multer razorpay
+npm init -y
+npm install express multer razorpay
