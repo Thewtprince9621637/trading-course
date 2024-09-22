@@ -1,62 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Course Selling Platform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Prince Wealth</title>
 </head>
 <body>
-    <h1>Upload Your Course Video</h1>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="course_video" required>
-        <button type="submit">Upload Video</button>
-    </form>
+    <h1>Buy Video Course - ₹4499</h1>
+    <button id="pay-button">Pay Now</button>
 
-    <h2>Payment</h2>
-    <form action="/payment" method="POST">
-        <input type="text" name="amount" placeholder="Enter amount" required>
-        <button type="submit">Pay Now</button>
-    </form>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('pay-button').onclick = function () {
+            var options = {
+                "key": "YOUR_RAZORPAY_KEY", // Razorpay Key ID
+                "amount": 4900, // Amount is in paise
+                "currency": "INR",
+                "name": "The Prince Wealth",
+                "description": "Video Course Purchase",
+                "image": "https://yourlogo.com/logo.png", // Optional
+                "handler": function (response){
+                    alert("Payment successful: " + response.razorpay_payment_id);
+                    // Here you can handle video access after payment
+                },
+                "prefill": {
+                    "contact": "7068721720", // Pre-filled contact
+                    "email": "your-email@example.com"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+        };
+    </script>
 </body>
 </html>
-const express = require('express');
-const multer = require('multer');
-const Razorpay = require('razorpay');
-const app = express();
-
-// Multer setup for video upload
-const upload = multer({ dest: 'uploads/' });
-
-// Razorpay Setup
-const razorpay = new Razorpay({
-    key_id: 'RAZORPAY_KEY_ID',
-    key_secret: 'RAZORPAY_SECRET',
-});
-
-// Upload video route
-app.post('/upload', upload.single('course_video'), (req, res) => {
-    res.send('Video uploaded successfully');
-});
-
-// Payment route
-app.post('/payment', async (req, res) => {
-    const amount = req.body.amount * 100; // Convert to paise
-    const options = {
-        amount: amount,
-        currency: 'INR',
-        receipt: 'order_rcptid_11',
-    };
-
-    try {
-        const order = await razorpay.orders.create(options);
-        res.json(order);
-    } catch (error) {
-        res.status(500).send('Error in creating payment');
-    }
-});
-
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
-npm init -y
-npm install express multer razorpay
-npm init -y
-npm install express multer razorpay
